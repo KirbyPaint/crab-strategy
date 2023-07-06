@@ -5,7 +5,6 @@ let yellowCrab;
 const width = 1366;
 const height = 768;
 
-// why I wish it was OOP
 let redCrabX = width / 2;
 let redCrabY = height / 2;
 let blueCrabX = width / 2;
@@ -69,17 +68,39 @@ function ai() {
 	clearSquare(blueCrabX, blueCrabY);
 	randomX = Math.floor(Math.random() * 9) * 75;
 	randomY = Math.floor(Math.random() * 9) * 75;
-	blueCrabMove(blueCrab, randomX+10, randomY+10);
-	
+	blueCrabMove(blueCrab, randomX + 10, randomY + 10);
+
 	clearSquare(greenCrabX, greenCrabY);
 	randomX = Math.floor(Math.random() * 9) * 75;
 	randomY = Math.floor(Math.random() * 9) * 75;
-	greenCrabMove(greenCrab, randomX+10, randomY+10);
-	
+	greenCrabMove(greenCrab, randomX + 10, randomY + 10);
+
 	clearSquare(yellowCrabX, yellowCrabY);
 	randomX = Math.floor(Math.random() * 9) * 75;
 	randomY = Math.floor(Math.random() * 9) * 75;
-	yellowCrabMove(yellowCrab, randomX+10, randomY+10);
+	yellowCrabMove(yellowCrab, randomX + 10, randomY + 10);
+}
+
+function score() {
+	// if red's coords ever match another crab's coords
+	// red gains a point
+
+	const blue = blueCrabX === redCrabX && blueCrabY === redCrabY;
+	const green = greenCrabX === redCrabX && greenCrabY === redCrabY;
+	const yellow = yellowCrabX === redCrabX && yellowCrabY === redCrabY;
+
+	if (blue) {
+		p1Score++;
+		p2Score--;
+	}
+	if (yellow) {
+		p1Score++;
+		p3Score--;
+	}
+	if (green) {
+		p1Score++;
+		p4Score--;
+	}
 }
 
 function resetCrabs() {
@@ -98,9 +119,11 @@ function draw() {
 }
 
 function grid() {
+	// some squares green, some brown
+	// 9x9 grid
 	for (let x = 0; x <= boardSize; x += tileSize) {
 		for (let y = 0; y <= boardSize; y += tileSize) {
-			fill('white');
+			x > y ? fill(`#f5f5f5`) : fill(`#d5d5d5`);
 			stroke(`black`);
 			line(x, 0, x, boardSize);
 			line(0, y, boardSize, y);
@@ -111,6 +134,7 @@ function grid() {
 // Handles all key press conditions
 function keyPressed() {
 	ai();
+	score();
 	let direction = '';
 	switch (keyCode) {
 		// w
@@ -191,21 +215,26 @@ function dynamicScoreboard() {
 	text(`${p1Score}`, boardSize + 200, 112)
 
 	// Shelldon
+	fill(`gray`);
+	noStroke();
+	rect(boardSize + 190, 155, 200, 75);
 	fill(`blue`);
 	text(`${p2Score}`, boardSize + 200, 187)
 
 	// Sandy
+	fill(`gray`);
+	noStroke();
+	rect(boardSize + 190, 230, 200, 75);
 	fill(`yellow`);
 	text(`${p3Score}`, boardSize + 200, 262)
 
 	// Eugene
+	fill(`gray`);
+	noStroke();
+	rect(boardSize + 190, 305, 200, 75);
 	fill(`green`);
 	text(`${p4Score}`, boardSize + 200, 337)
 	// clear previous numbers
-}
-
-function updateP1Score() {
-	p1Score += 1;
 }
 
 function staticScoreboard() {
